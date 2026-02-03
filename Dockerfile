@@ -27,15 +27,17 @@ WORKDIR /var/www
 # Copy application files
 COPY . .
 
-# Install PHP dependencies
-RUN composer install --no-dev --optimize-autoloader
+# Install PHP dependencies + clear cached config
+RUN composer install --no-dev --optimize-autoloader \
+ && php artisan config:clear \
+ && php artisan cache:clear
 
-# Laravel permissions (important)
-RUN chown -R www-data:www-data /var/www \
-    && chmod -R 775 storage bootstrap/cache
+# Laravel permissions
+RUN chown -R www-data:www-data storage bootstrap/cache \
+ && chmod -R 775 storage bootstrap/cache
 
 # Expose Render port
 EXPOSE 10000
 
-# Start Laravel
-CMD php -S 0.0.0.0:10000 -t public
+# FIRST DEPLOY ONLY (run migrations)
+CMD php artisan migrate --force && php -S 0.0.0.0:10000 -t public
