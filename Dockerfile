@@ -27,18 +27,15 @@ WORKDIR /var/www
 # Copy application files
 COPY . .
 
-# Install PHP dependencies ONLY (no artisan here)
+# Install PHP dependencies
 RUN composer install --no-dev --optimize-autoloader
 
 # Laravel permissions
 RUN chown -R www-data:www-data storage bootstrap/cache \
  && chmod -R 775 storage bootstrap/cache
 
-# Expose Render port
-EXPOSE 10000
+# Expose Railway port
+EXPOSE 8080
 
-# Run at container startup (runtime, envs available)
-CMD php artisan config:clear \
- && php artisan cache:clear \
- && php artisan migrate --force \
- && php -S 0.0.0.0:10000 -t public
+# Start Laravel (NO artisan commands here)
+CMD php -S 0.0.0.0:$PORT -t public
