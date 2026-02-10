@@ -13,11 +13,16 @@ return new class extends Migration {
         Schema::create('safe_points', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('type');
+            $table->enum('type', [
+                'shelter',
+                'food_distribution',
+                'medical_camp',
+            ]);
             $table->integer('capacity');
             $table->enum('status', ['sufficient', 'insufficient', 'critical']);
-            $table->string('latitiude')->nullable();
-            $table->string('longitude')->nullable();
+            $table->decimal('latitude', 10, 7)->nullable();
+            $table->decimal('longitude', 10, 7)->nullable();
+
             $table->timestamps();
         });
     }

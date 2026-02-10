@@ -12,10 +12,15 @@ return new class extends Migration {
     {
         Schema::create('disaster_points', function (Blueprint $table) {
             $table->id();
-            $table->string('type');
+            $table->enum('type', [
+                'flood',
+                'storm',
+                'earthquake',
+                'fire',
+            ]);
             $table->longText('description');
             // $table->enum('status', ['sufficient', 'insufficient', 'critical']);
-            $table->string('latitiude')->nullable();
+            $table->string('latitude')->nullable();
             $table->string('longitude')->nullable();
             $table->timestamps();
         });

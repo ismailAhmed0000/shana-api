@@ -25,7 +25,14 @@ class SosController extends Controller
             'description' => 'required|string|max:255',
             'latitude' => 'required|numeric',
             'longitude' => 'required|numeric',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
         ]);
+
+        if ($request->hasFile('image')) {
+            $data['image_path'] = $request
+                ->file('image')
+                ->store('safepoints', 'public');
+        }
 
         $sos = Sos::create($data);
 

@@ -11,6 +11,7 @@ class SafePoint extends Model
         'type',
         'description',
         'latitude',
+        'capacity',
         'longitude',
         'status',
     ];
