@@ -20,4 +20,5 @@ Route::post('/ngo/login', [AuthController::class, 'login']);
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/dashboard/overview', [PointsController::class, 'overView']);
     Route::post('/ngo/logout', [AuthController::class, 'logout']);
+    Route::get('/ngo/me', [AuthController::class, 'me']);
 });

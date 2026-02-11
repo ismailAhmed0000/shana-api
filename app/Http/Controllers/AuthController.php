@@ -57,6 +57,17 @@ class AuthController extends Controller
         ]);
     }
 
+    public function me(Request $request)
+    {
+        $user = $request->user();
+        $token = $request->bearerToken();
+
+        return response()->json(['message' => 'ME', 'data' => [
+            'user' => $user,
+            'token' => $token
+        ]]);
+    }
+
     public function logout(Request $request)
     {
         $request->user()->currentAccessToken()->delete();
