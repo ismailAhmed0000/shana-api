@@ -22,6 +22,7 @@ return new class extends Migration {
             // $table->enum('status', ['sufficient', 'insufficient', 'critical']);
             $table->string('latitude')->nullable();
             $table->string('longitude')->nullable();
+            $table->enum('disaster_level', ['low', 'medium', 'high', 'very_high']);
             $table->timestamps();
         });
     }

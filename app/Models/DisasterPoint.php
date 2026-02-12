@@ -11,6 +11,7 @@ class DisasterPoint extends Model
         'description',
         'latitude',
         'longitude',
+        'disaster_level'
     ];
 
     public function attachable()

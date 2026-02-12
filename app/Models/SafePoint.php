@@ -20,4 +20,9 @@ class SafePoint extends Model
     {
         return $this->morphTo();
     }
+
+    public function resources()
+    {
+        return $this->hasMany(Resource::class);
+    }
 }

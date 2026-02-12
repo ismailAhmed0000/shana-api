@@ -26,6 +26,7 @@ class DisatserController extends Controller
             'description' => 'required|string',
             'latitude' => 'required|numeric|between:-90,90',
             'longitude' => 'required|numeric|between:-180,180',
+            'disaster_level' => 'required:low,medium,high,very_high'
         ]);
 
         $disaster = DisasterPoint::create($data);
@@ -43,6 +44,7 @@ class DisatserController extends Controller
             'description' => 'sometimes|string',
             'latitude' => 'sometimes|numeric|between:-90,90',
             'longitude' => 'sometimes|numeric|between:-180,180',
+            'disaster_level' => 'sometimes:low,medium,high,very_high'
         ]);
 
         $disaster = DisasterPoint::update($data);
