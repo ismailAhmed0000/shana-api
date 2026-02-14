@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
@@ -75,5 +74,27 @@ class AuthController extends Controller
         return response()->json([
             'message' => 'Logged out successfully',
         ]);
+    }
+
+    public function approve(Request $request, User $user)
+    {
+        $data = $request->validate([
+            'approved' => ['required', 'boolean'],
+        ]);
+
+        $user->update([
+            'approved' => $data['approved'],
+        ]);
+
+        return response()->json([
+            'message' => 'User approved successfully',
+            'data' => $user,
+        ]);
+    }
+
+    public function getNgos()
+    {
+        $ngo = User::where('approved', true)->get();
+        return response()->json(['message' => 'all ngos fetched', 'data' => $ngo]);
     }
 }
