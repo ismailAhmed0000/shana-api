@@ -43,7 +43,7 @@ class SafePointController extends Controller
                 'longitude' => $data['longitude'],
             ]);
 
-            $safePoint->resource()->create([
+            $safePoint->resources()->create([
                 'type' => $data['resource_type'],
                 'description' => $data['resource_description'] ?? null,
             ]);
@@ -53,7 +53,7 @@ class SafePointController extends Controller
 
         return response()->json([
             'message' => 'Safe point created successfully',
-            'data' => $safePoint->load('resource'),
+            'data' => $safePoint->load('resources'),
         ], 201);
     }
 

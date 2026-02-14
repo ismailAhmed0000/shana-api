@@ -12,6 +12,7 @@ return new class extends Migration {
     {
         Schema::create('resources', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('safe_point_id')->nullable();
             $table->enum('type', ['clothes', 'food', 'medical_supplies', 'water', 'others']);
             $table->string('description')->nullable();
             $table->timestamps();
