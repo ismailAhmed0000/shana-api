@@ -22,5 +22,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/dashboard/overview', [PointsController::class, 'overView']);
     Route::post('/ngo/logout', [AuthController::class, 'logout']);
     Route::get('/me', [AuthController::class, 'me']);
+    Route::get('/get-all-ngo', [AuthController::class, 'ngos']);
     Route::patch('/users/{user}/approve', [AuthController::class, 'approve']);
 });
