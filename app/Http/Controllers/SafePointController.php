@@ -24,28 +24,32 @@ class SafePointController extends Controller
     {
         $data = $request->validate([
             'name' => 'required|string|max:255',
+            // 'type' => 'required|in:shelter,food_distribution,medical_camp',
             'capacity' => 'required|integer|min:0',
-            'status' => 'required|in:sufficient,insufficient,critical',
-            'latitude' => 'required|numeric|between:-90,90',
-            'longitude' => 'required|numeric|between:-180,180',
-            'resource_type' => 'required|in:clothes,food,medical_supplies,water,others',
-            'resource_description' => 'nullable|string',
+            'location.lat' => 'required|numeric|between:-90,90',
+            'location.lng' => 'required|numeric|between:-180,180',
+            'resourceStatus' => 'required|in:sufficient,insufficient,critical',
+            'resources' => 'required|array|min:1',
+            'resources.*.type' => 'required|in:clothes,food,medical_supplies,water,others',
+            'resources.*.status' => 'required|string',
         ]);
 
         $safePoint = DB::transaction(function () use ($data) {
             $safePoint = SafePoint::create([
                 'name' => $data['name'],
-                'type' => $data['type'],
+                // 'type' => $data['type'],
                 'capacity' => $data['capacity'],
-                'status' => $data['status'],
-                'latitude' => $data['latitude'],
-                'longitude' => $data['longitude'],
+                'status' => $data['resourceStatus'],
+                'latitude' => data_get($data, 'location.lat'),
+                'longitude' => data_get($data, 'location.lng'),
             ]);
 
-            $safePoint->resources()->create([
-                'type' => $data['resource_type'],
-                'description' => $data['resource_description'] ?? null,
-            ]);
+            foreach ($data['resources'] as $resource) {
+                $safePoint->resources()->create([
+                    'type' => $resource['type'],
+                    'description' => $resource['status'],
+                ]);
+            }
 
             return $safePoint;
         });
@@ -62,40 +66,62 @@ class SafePointController extends Controller
             'name' => 'sometimes|string|max:255',
             'type' => 'sometimes|in:shelter,food_distribution,medical_camp',
             'capacity' => 'sometimes|integer|min:0',
-            'status' => 'sometimes|in:sufficient,insufficient,critical',
-            'latitude' => 'sometimes|numeric|between:-90,90',
-            'longitude' => 'sometimes|numeric|between:-180,180',
-            'resource_type' => 'sometimes|in:clothes,food,medical_supplies,water,others',
-            'resource_description' => 'nullable|string',
+            'location.lat' => 'sometimes|numeric|between:-90,90',
+            'location.lng' => 'sometimes|numeric|between:-180,180',
+            'resourceStatus' => 'sometimes|in:sufficient,insufficient,critical',
+            'resources' => 'sometimes|array',
+            'resources.*.type' => 'required_with:resources|in:clothes,food,medical_supplies,water,others',
+            'resources.*.status' => 'required_with:resources|string',
         ]);
 
         DB::transaction(function () use ($safePoint, $data) {
-            $safePoint->update(collect($data)->only([
-                'name',
-                'type',
-                'capacity',
-                'status',
-                'latitude',
-                'longitude',
-            ])->toArray());
+            $safePointUpdate = [];
 
-            if (
-                array_key_exists('resource_type', $data) ||
-                array_key_exists('resource_description', $data)
-            ) {
-                $safePoint->resource()->updateOrCreate(
-                    [],
-                    [
-                        'type' => $data['resource_type'] ?? $safePoint->resource?->type,
-                        'description' => $data['resource_description'] ?? $safePoint->resource?->description,
-                    ]
-                );
+            if (array_key_exists('name', $data)) {
+                $safePointUpdate['name'] = $data['name'];
+            }
+
+            if (array_key_exists('type', $data)) {
+                $safePointUpdate['type'] = $data['type'];
+            }
+
+            if (array_key_exists('capacity', $data)) {
+                $safePointUpdate['capacity'] = $data['capacity'];
+            }
+
+            if (data_get($data, 'location.lat') !== null) {
+                $safePointUpdate['latitude'] = data_get($data, 'location.lat');
+            }
+
+            if (data_get($data, 'location.lng') !== null) {
+                $safePointUpdate['longitude'] = data_get($data, 'location.lng');
+            }
+
+            if (array_key_exists('resourceStatus', $data)) {
+                $safePointUpdate['status'] = $data['resourceStatus'];
+            }
+
+            if (!empty($safePointUpdate)) {
+                $safePoint->update($safePointUpdate);
+            }
+
+            if (!empty($data['resources'])) {
+                foreach ($data['resources'] as $resource) {
+                    $safePoint->resources()->updateOrCreate(
+                        [
+                            'type' => $resource['type'],
+                        ],
+                        [
+                            'description' => $resource['status'],
+                        ]
+                    );
+                }
             }
         });
 
         return response()->json([
             'message' => 'Safe point updated successfully',
-            'data' => $safePoint->load('resource'),
+            'data' => $safePoint->load('resources'),
         ]);
     }
 
