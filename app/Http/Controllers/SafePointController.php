@@ -24,7 +24,6 @@ class SafePointController extends Controller
     {
         $data = $request->validate([
             'name' => 'required|string|max:255',
-            'type' => 'required|in:shelter,food_distribution,medical_camp',
             'capacity' => 'required|integer|min:0',
             'status' => 'required|in:sufficient,insufficient,critical',
             'latitude' => 'required|numeric|between:-90,90',
