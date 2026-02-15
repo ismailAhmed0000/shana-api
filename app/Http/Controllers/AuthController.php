@@ -56,6 +56,32 @@ class AuthController extends Controller
         ]);
     }
 
+    public function ngoLogin(Request $request)
+    {
+        $data = $request->validate([
+            'user_id' => 'required|exists:users,id',
+            'password' => 'required|string',
+        ]);
+
+        $user = User::where('id', $data['user_id'])
+            ->where('approved', true)
+            ->first();
+
+        if (!$user || !Hash::check($data['password'], $user->password)) {
+            throw ValidationException::withMessages([
+                'user_id' => ['Invalid credentials or NGO not approved'],
+            ]);
+        }
+
+        $token = $user->createToken('ngo-token')->plainTextToken;
+
+        return response()->json([
+            'message' => 'Login successful',
+            'user' => $user,
+            'token' => $token,
+        ]);
+    }
+
     public function me(Request $request)
     {
         $user = $request->user();

@@ -18,7 +18,8 @@ Route::patch('/users/{user}/approve', [AuthController::class, 'approve']);
 Route::get('/get-all-ngo', [AuthController::class, 'ngos']);
 
 Route::post('/ngo/register', [AuthController::class, 'register']);
-Route::post('/ngo/login', [AuthController::class, 'login']);
+Route::post('/login', [AuthController::class, 'login']);
+Route::post('/ngo/login', [AuthController::class, 'ngoLogin']);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/dashboard/overview', [PointsController::class, 'overView']);
