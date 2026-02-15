@@ -39,7 +39,7 @@ class SosController extends Controller
         return response()->json(['message' => 'Sos request created successflyy', 'data' => $sos]);
     }
 
-    public function update(Request $request)
+    public function update(Request $request, Sos $sos)
     {
         $data = $request->validate([
             'description' => 'sometimes|string|max:255',
@@ -47,7 +47,7 @@ class SosController extends Controller
             'longitude' => 'sometimes|numeric',
         ]);
 
-        $sos = Sos::update($data);
+        $sos->update($data);
 
         return response()->json(['message' => 'Sos request created successflyy', 'data' => $sos]);
     }

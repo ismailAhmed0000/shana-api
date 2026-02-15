@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Resource;
 use App\Models\SafePoint;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -123,6 +124,14 @@ class SafePointController extends Controller
             'message' => 'Safe point updated successfully',
             'data' => $safePoint->load('resources'),
         ]);
+    }
+
+    public function deleteResource($id)
+    {
+        $data = Resource::find($id);
+        $data->delete();
+
+        return response()->json(['message' => 'SafePoint request deleted']);
     }
 
     public function destroy($id)

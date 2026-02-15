@@ -10,13 +10,13 @@ class DisatserController extends Controller
     public function index()
     {
         $disaster = DisasterPoint::get();
-        return response()->json(['message' => 'All sos requests retrieved', 'data' => $disaster]);
+        return response()->json(['message' => 'All DisasterPoint requests retrieved', 'data' => $disaster]);
     }
 
     public function show($id)
     {
         $disaster = DisasterPoint::find($id);
-        return response()->json(['message' => 'Sos request retrieved ', 'data' => $disaster]);
+        return response()->json(['message' => 'DisasterPoint request retrieved ', 'data' => $disaster]);
     }
 
     public function store(Request $request)
@@ -32,24 +32,27 @@ class DisatserController extends Controller
         $disaster = DisasterPoint::create($data);
 
         return response()->json([
-            'message' => 'SOS request created successfully',
+            'message' => 'DisasterPoint request created successfully',
             'data' => $disaster,
         ], 201);
     }
 
-    public function update(Request $request)
+    public function update(Request $request, DisasterPoint $disaster)
     {
         $data = $request->validate([
             'type' => 'sometimes|in:flood,storm,earthquake,fire',
             'description' => 'sometimes|string',
             'latitude' => 'sometimes|numeric|between:-90,90',
             'longitude' => 'sometimes|numeric|between:-180,180',
-            'disaster_level' => 'sometimes:low,medium,high,very_high'
+            'disaster_level' => 'sometimes|in:low,medium,high,very_high',
         ]);
 
-        $disaster = DisasterPoint::update($data);
+        $disaster->update($data);
 
-        return response()->json(['message' => 'Sos request created successflyy', 'data' => $disaster]);
+        return response()->json([
+            'message' => 'DisasterPoint updated successfully',
+            'data' => $disaster->fresh(),
+        ]);
     }
 
     public function destroy($id)
@@ -57,6 +60,6 @@ class DisatserController extends Controller
         $data = DisasterPoint::find($id);
         $data->delete();
 
-        return response()->json(['message' => 'Sos request deleted']);
+        return response()->json(['message' => 'DisasterPoint request deleted']);
     }
 }

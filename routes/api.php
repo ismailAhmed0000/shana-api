@@ -24,4 +24,5 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/me', [AuthController::class, 'me']);
     Route::get('/get-all-ngo', [AuthController::class, 'ngos']);
     Route::patch('/users/{user}/approve', [AuthController::class, 'approve']);
+    Route::delete('/resource/{resource}/delete', [SafePointController::class, 'deleteResource']);
 });
