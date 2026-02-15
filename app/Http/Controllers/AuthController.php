@@ -92,7 +92,7 @@ class AuthController extends Controller
         ]);
     }
 
-    public function getAllNgos()
+    public function getApprovedNgos()
     {
         $ngo = User::where('approved', true)->get();
         return response()->json(['message' => 'all ngos fetched', 'data' => $ngo]);
@@ -100,7 +100,7 @@ class AuthController extends Controller
 
     public function ngos()
     {
-        $ngo = User::where('approved', false)->get();
+        $ngo = User::all();
         return response()->json(['message' => 'all ngos fetched', 'data' => $ngo]);
     }
 }

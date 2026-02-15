@@ -13,7 +13,9 @@ Route::apiResource('disaster', DisatserController::class);
 Route::apiResource('points', PointsController::class);
 Route::apiResource('safe-points', SafePointController::class);
 Route::apiResource('attachable', AttachableController::class);
-Route::get('/get-ngo', [AuthController::class, 'getNgos']);
+Route::get('/approved-ngos', [AuthController::class, 'getApprovedNgos']);
+Route::patch('/users/{user}/approve', [AuthController::class, 'approve']);
+Route::get('/get-all-ngo', [AuthController::class, 'ngos']);
 
 Route::post('/ngo/register', [AuthController::class, 'register']);
 Route::post('/ngo/login', [AuthController::class, 'login']);
